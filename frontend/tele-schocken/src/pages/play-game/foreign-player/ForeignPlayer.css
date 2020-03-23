@@ -1,0 +1,13 @@
+.foreign-player{
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid grey;
+  display: flex;
+  flex-direction: column;
+}
+
+.foreign-player-dices{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
