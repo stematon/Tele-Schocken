@@ -129,9 +129,11 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
 
   @action.bound
   private handleCreateGame(e: any): void {
-    this.httpClient
-      .get('/create')
-      .then(result => console.log('Result:', result));
+    fetch("/api/game",{
+      method: "post",
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ 'name': this.usernameInput}),
+    }).then(result => console.log("Result: ", result))
 
     //console.log("Create Game");
   }

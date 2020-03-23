@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Container } from '@material-ui/core';
 import './ForeignPlayer.css';
-import { Dice } from '../dice/Dice';
+import { Dice } from '../../../components/dice/Dice';
 import { computed } from 'mobx';
 
 interface ForeignPlayerProps {
