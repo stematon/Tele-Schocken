@@ -13,23 +13,16 @@ import { observer, inject } from 'mobx-react';
 import { makeStyles } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import { throwStatement } from '@babel/types';
-import { HttpClient } from '../lib/http-client/HttpClient';
+
 
 interface JoinComponentProps {
-  httpClient: HttpClient;
 }
 
-@inject('httpClient')
 @observer
 export class JoinComponent extends React.Component<JoinComponentProps> {
   @observable private gameCodeInput: string = '';
   @observable private usernameInput: string = '';
   @observable private tabIndex: number = 1;
-
-  @computed
-  private get httpClient(): HttpClient {
-    return this.props.httpClient;
-  }
 
   render() {
     return (
@@ -93,7 +86,10 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
                     </div>
                   </div>
                   <div className='join-component-button-area-button'>
-                    <Button color='primary' onClick={this.handleCreateGame}>
+                    <Button
+                      color='primary'
+                      onClick={this.handleCreateGame}
+                      disabled={this.usernameInput === ''}>
                       New Game!
                     </Button>
                   </div>
@@ -129,11 +125,11 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
 
   @action.bound
   private handleCreateGame(e: any): void {
-    fetch("/api/game",{
-      method: "post",
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ 'name': this.usernameInput}),
-    }).then(result => console.log("Result: ", result))
+    fetch('/api/game', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: this.usernameInput })
+    }).then(result => console.log('Result: ', result));
 
     //console.log("Create Game");
   }

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Container, AppBar, Toolbar, Button } from '@material-ui/core';
 import './MainPage.css';
 import { PlayGamePage } from './play-game/PlayGamePage';
-import { JoinComponent } from './JoinComponent';
+import { JoinComponent } from './join-game/JoinComponent';
 import { observer } from 'mobx-react';
 
 @observer
