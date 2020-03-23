@@ -1,44 +1,59 @@
 import React from 'react';
-import { Button, Container, TextField, AppBar, Tabs, Tab } from '@material-ui/core';
+import {
+  Button,
+  Container,
+  TextField,
+  AppBar,
+  Tabs,
+  Tab
+} from '@material-ui/core';
 import './JoinComponent.css';
-import { observable, action, computed } from "mobx";
-import { observer } from 'mobx-react';
+import { observable, action, computed } from 'mobx';
+import { observer, inject } from 'mobx-react';
 import { makeStyles } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import { throwStatement } from '@babel/types';
+import { HttpClient } from '../lib/http-client/HttpClient';
 
+interface JoinComponentProps {
+  httpClient: HttpClient;
+}
 
+@inject('httpClient')
 @observer
-export class JoinComponent extends React.Component {
-  @observable private gameCodeInput: string = "";
-  @observable private usernameInput: string = "";
+export class JoinComponent extends React.Component<JoinComponentProps> {
+  @observable private gameCodeInput: string = '';
+  @observable private usernameInput: string = '';
   @observable private tabIndex: number = 1;
+
+  @computed
+  private get httpClient(): HttpClient {
+    return this.props.httpClient;
+  }
 
   render() {
     return (
-      <div style={{ alignContent: 'center', display: 'flex', height: "60%" }}>
+      <div style={{ alignContent: 'center', display: 'flex', height: '60%' }}>
         <div style={{ flex: '1' }} />
         <div className='join-component-button-area'>
-          <div >
-            <AppBar position="static" color="default">
+          <div>
+            <AppBar position='static' color='default'>
               <Tabs
                 value={this.tabIndex}
                 onChange={this.handleTabIndexChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-              >
-                <Tab label="Join Game" />
-                <Tab label="Create Game" />
+                indicatorColor='primary'
+                textColor='primary'
+                variant='fullWidth'
+                aria-label='full width tabs example'>
+                <Tab label='Join Game' />
+                <Tab label='Create Game' />
               </Tabs>
             </AppBar>
             <SwipeableViews
               axis={'x-reverse'}
               index={this.tabIndex}
-              onChangeIndex={this.handleTabIndexChange}
-            >
-              <div >
+              onChangeIndex={this.handleTabIndexChange}>
+              <div>
                 <div className='join-component-button-area-row'>
                   <div className='join-component-button-area-button'>
                     <form
@@ -53,12 +68,14 @@ export class JoinComponent extends React.Component {
                       />
                     </form>
                   </div>
-                  <div className='join-component-button-area-button' onClick={this.handleJoinGame}>
+                  <div
+                    className='join-component-button-area-button'
+                    onClick={this.handleJoinGame}>
                     <Button color='primary'>Beitreten</Button>
                   </div>
                 </div>
               </div>
-              <div >
+              <div>
                 <div className='join-component-button-area-row'>
                   <div className='join-component-button-area-button'>
                     <div className='join-component-button-area-button'>
@@ -78,18 +95,14 @@ export class JoinComponent extends React.Component {
                   <div className='join-component-button-area-button'>
                     <Button color='primary' onClick={this.handleCreateGame}>
                       New Game!
-              </Button>
+                    </Button>
                   </div>
                 </div>
               </div>
             </SwipeableViews>
           </div>
-
-
-
         </div>
         <div style={{ flex: '1' }} />
-
       </div>
     );
   }
@@ -107,19 +120,19 @@ export class JoinComponent extends React.Component {
   }
   @action.bound
   private handleTabIndexChange(e: any, value: number): void {
-    this.tabIndex = value
+    this.tabIndex = value;
     //console.log("TabIndexValue ", value);
   }
   private handleJoinGame(e: any): void {
-
     //console.log("Join Game");
   }
 
+  @action.bound
   private handleCreateGame(e: any): void {
+    this.httpClient
+      .get('/create')
+      .then(result => console.log('Result:', result));
 
     //console.log("Create Game");
   }
-
-
-
 }
