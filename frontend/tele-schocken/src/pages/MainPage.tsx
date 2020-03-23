@@ -5,6 +5,7 @@ import './MainPage.css';
 import { PlayGamePage } from './play-game/PlayGamePage';
 import { JoinComponent } from './join-game/JoinComponent';
 import { observer } from 'mobx-react';
+import { WaitingArea } from './join-game/WaitingArea';
 
 @observer
 export class MainPage extends React.Component {
@@ -20,6 +21,7 @@ export class MainPage extends React.Component {
         <Router>
           <Switch>
             <Route exact path='/play' component={PlayGamePage} />
+            <Route exact path='/wait' component={WaitingArea} />
             <Route path='' component={JoinComponent} />
           </Switch>
         </Router>
