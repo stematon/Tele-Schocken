@@ -64,7 +64,7 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
                   <div
                     className='join-component-button-area-button'
                     onClick={this.handleJoinGame}>
-                    <Button color='primary'>Beitreten</Button>
+                    <Button color='primary'>Join!</Button>
                   </div>
                 </div>
               </div>

@@ -7,7 +7,7 @@ import StarIcon from '@material-ui/icons/Star';
 import { observable, computed, action } from 'mobx';
 import { User } from '../../store/User';
 
-interface WaitingAreaProps {}
+interface WaitingAreaProps { }
 
 @observer
 export class WaitingArea extends React.Component<WaitingAreaProps> {
@@ -16,24 +16,42 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
   @computed
   private get userElements(): JSX.Element[] {
     return this.users.map((user, index) => {
-      return (
-        <ListItem button key={index}>
-          <ListItemText inset primary={user.name} />
-        </ListItem>
-      );
+      if(user.id==1){  //if admin
+        return (
+          <ListItem button key={index}>
+            <ListItemIcon>
+              <StarIcon />
+            </ListItemIcon>
+            <ListItemText primary={user.name} />
+          </ListItem>
+        );
+        }
+        else {
+          return (
+            <ListItem button key={index}>
+              <ListItemText inset primary={user.name} />
+            </ListItem>
+          );
+        }
     });
   }
+
+
 
   @action.bound
   public componentDidMount(): void {
     const user1 = new User();
-    user1.id=1;
-    user1.name= "User1";
+    user1.id = 1;
+    user1.name = "Admin";
     this.users.push(user1);
     const user2 = new User();
-    user2.id=2;
-    user2.name= "User2";
+    user2.id = 2;
+    user2.name = "User2";
     this.users.push(user2);
+    const user3 = new User();
+    user3.id = 3;
+    user3.name = "User3";
+    this.users.push(user3);
   }
 
   render() {
