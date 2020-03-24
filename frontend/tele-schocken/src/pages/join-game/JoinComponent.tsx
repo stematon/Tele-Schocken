@@ -13,6 +13,7 @@ import { observer, inject } from 'mobx-react';
 import { makeStyles } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import { throwStatement } from '@babel/types';
+import { Redirect } from 'react-router';
 
 
 interface JoinComponentProps {
@@ -23,10 +24,21 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
   @observable private gameCodeInput: string = '';
   @observable private usernameInput: string = '';
   @observable private tabIndex: number = 1;
+  @observable private gameId: number | undefined;
+
+  @computed
+  private get redirect(): JSX.Element{
+    if(this.gameId === undefined){
+      return <div></div>;
+    } else {
+      return <Redirect to={`/game/${this.gameCodeInput}`}/>
+    }
+  }
 
   render() {
     return (
       <div style={{ alignContent: 'center', display: 'flex', height: '60%' }}>
+        {this.redirect}
         <div style={{ flex: '1' }} />
         <div className='join-component-button-area'>
           <div>

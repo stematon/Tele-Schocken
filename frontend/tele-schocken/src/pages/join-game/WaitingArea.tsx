@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { List, ListItem, ListItemIcon, ListItemText, Button, TextField } from '@material-ui/core';
 import classes from '*.module.css';
 import './WaitingArea.css';
-import StarIcon from '@material-ui/icons/Star';
 import { observable, computed, action } from 'mobx';
 import { User } from '../../store/User';
 
@@ -11,7 +10,13 @@ interface WaitingAreaProps { }
 
 @observer
 export class WaitingArea extends React.Component<WaitingAreaProps> {
+  @observable private timer: NodeJS.Timeout | undefined;
   @observable private users: User[] = [];
+
+  @computed
+  private get gameId(): number {
+    return this.props.gameId;
+  }
 
   @computed
   private get userElements(): JSX.Element[] {
@@ -56,6 +61,8 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
 
   @action.bound
   public componentDidMount(): void {
+    //TODO: Dispose this timer when component is unmounted
+    this.timer = setInterval(() => this.waitForUsers(), 1000);
     const user1 = new User();
     user1.id = 1;
     user1.name = "Admin";
@@ -68,6 +75,12 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
     user3.id = 3;
     user3.name = "User3";
     this.users.push(user3);
+  }
+
+  @action.bound
+  public componentWillUnmount(): void {
+    console.log("Unmounted!!!!")
+    this.timer=undefined;
   }
 
   render() {
@@ -88,5 +101,20 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
         </div>
       </div>
     );
+  }
+
+  @action.bound
+  private waitForUsers(): void {
+   fetch(`/api/game/${this.gameId}`, {
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(result => {
+      console.log('Result: ', result);
+    });
+  }
+
+  @action.bound
+  private handleStartGame(): void{
+    this.props.onGameStarted();
   }
 }

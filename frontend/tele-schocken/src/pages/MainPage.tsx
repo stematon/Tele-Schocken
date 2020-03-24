@@ -17,11 +17,9 @@ export class MainPage extends React.Component {
             <h1 className='main-page-header-text'>Tele-Schocken</h1>
           </Toolbar>
         </AppBar>
-
         <Router>
           <Switch>
-            <Route exact path='/play' component={PlayGamePage} />
-            <Route exact path='/wait' component={WaitingArea} />
+            <Route exact path='/play' component={PlayGamePage} gameId={1234} isWaiting={true}/>
             <Route path='' component={JoinComponent} />
           </Switch>
         </Router>
