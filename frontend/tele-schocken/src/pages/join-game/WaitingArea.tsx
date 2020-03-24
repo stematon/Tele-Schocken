@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, Button, TextField } from '@material-ui/core';
 import classes from '*.module.css';
 import './WaitingArea.css';
 import StarIcon from '@material-ui/icons/Star';
@@ -16,7 +16,7 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
   @computed
   private get userElements(): JSX.Element[] {
     return this.users.map((user, index) => {
-      if(user.id==1){  //if admin
+      if (user.id == 1) {  //if admin
         return (
           <ListItem button key={index}>
             <ListItemIcon>
@@ -25,15 +25,31 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
             <ListItemText primary={user.name} />
           </ListItem>
         );
-        }
-        else {
-          return (
-            <ListItem button key={index}>
-              <ListItemText inset primary={user.name} />
-            </ListItem>
-          );
-        }
+      }
+      else {
+        return (
+          <ListItem button key={index}>
+            <ListItemText inset primary={user.name} />
+          </ListItem>
+        );
+      }
     });
+  }
+
+  @computed
+  private get controlElements() {
+    return (
+      <div style={{ alignContent: 'center', display: 'flex', height: '20%' }}>
+        <div style={{ flex: '1' }}>
+          <form noValidate style={{ flex: '1' }} autoComplete="off">
+            <TextField id="filled-basic" label="Game ID" variant="filled" defaultValue="4711" />
+          </form>
+        </div>
+        <div style={{ flex: '1' }}>
+          <Button variant="contained">Start Game</Button>
+        </div>
+      </div>
+    );
   }
 
 
@@ -56,13 +72,20 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
 
   render() {
     return (
-      <div>
-        <List
-          component='nav'
-          className='waiting-area-list'
-          aria-label='contacts'>
-          {this.userElements}
-        </List>
+
+      <div style={{ alignContent: 'center', display: 'flex', height: '60%' }}>
+        <div style={{ flex: '1' }} />
+        <div className=".waiting-area-list-area">
+          <List
+            component='nav'
+            className='waiting-area-list'
+            aria-label='contacts'>
+            {this.userElements}
+          </List>
+        </div>
+        <div style={{ flex: '1' }} >
+          {this.controlElements}
+        </div>
       </div>
     );
   }
