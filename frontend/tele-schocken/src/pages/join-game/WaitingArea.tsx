@@ -6,7 +6,10 @@ import './WaitingArea.css';
 import { observable, computed, action } from 'mobx';
 import { User } from '../../store/User';
 
-interface WaitingAreaProps { }
+interface WaitingAreaProps { 
+  gameId: number;
+  onGameStarted(): void;
+}
 
 @observer
 export class WaitingArea extends React.Component<WaitingAreaProps> {
@@ -25,7 +28,7 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
         return (
           <ListItem button key={index}>
             <ListItemIcon>
-              <StarIcon />
+              {/*<StarIcon /> */}
             </ListItemIcon>
             <ListItemText primary={user.name} />
           </ListItem>
