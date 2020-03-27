@@ -12,9 +12,21 @@ import { observable, action, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import SwipeableViews from 'react-swipeable-views';
 import { Redirect } from 'react-router';
+import { Game } from '../../store/Game';
 
+interface CreateGameDto {
+  Link: string;
+  UUID: string;
+  Admin_Id: number;
+}
+
+interface ValidationFailure{
+  error: boolean;
+  helperText: string;
+}
 
 interface JoinComponentProps {
+  onAdminIdChange(id: number): void;
 }
 
 @observer
@@ -22,15 +34,27 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
   @observable private gameCodeInput: string = '';
   @observable private usernameInput: string = '';
   @observable private tabIndex: number = 1;
-  @observable private gameId: number = -1;
+  @observable private gameUuid: string;
+  @observable private validationFailure: ValidationFailure;
+  @observable private adminId: number;
 
   @computed
-  private get redirect(): JSX.Element{
-    if(this.gameId === -1){
+  private get redirect(): JSX.Element {
+    if (this.gameUuid === undefined) {
       return <div></div>;
     } else {
-      return <Redirect to={`/${this.gameCodeInput}`}/>
+      return <Redirect to={`/${this.gameUuid}`} />;
     }
+  }
+
+  public constructor(props: any){
+    super(props);
+    console.log(this.props)
+
+    this.validationFailure = {
+      error: false,
+      helperText: ""
+    };
   }
 
   render() {
@@ -64,9 +88,11 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
                       noValidate
                       autoComplete='off'>
                       <TextField
+                        error={this.validationFailure.error}
                         id='game-uuid'
                         label='Spiel-Code'
                         variant='outlined'
+                        helperText={this.validationFailure.helperText}
                         onChange={this.handleInputGameCodeChange}
                       />
                     </form>
@@ -74,7 +100,11 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
                   <div
                     className='join-component-button-area-button'
                     onClick={this.handleJoinGame}>
-                    <Button color='primary' disabled={this.gameCodeInput === "" }>Join!</Button>
+                    <Button
+                      color='primary'
+                      disabled={this.gameCodeInput === ''}>
+                      Join!
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -121,6 +151,10 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
   @action.bound
   private handleInputGameCodeChange(e: any): void {
     this.gameCodeInput = e.target.value;
+    this.validationFailure= {
+      error: false,
+      helperText: ""
+    }
   }
 
   @action.bound
@@ -133,8 +167,15 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
     fetch(`/api/game/${this.gameCodeInput}`, {
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
-    }).then(result => {
-      console.log('Result: ', result);
+    }).then(res => {
+      if (res.status === 404) {
+        this.validationFailure={
+          error: true,
+          helperText: "Unknown Game Id!"
+        }
+      } else {
+        this.gameUuid = this.gameCodeInput;
+      }
     });
   }
 
@@ -144,6 +185,12 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: this.usernameInput })
-    }).then(action(result => console.log('Result: ', result)));
+    })
+      .then(res => res.json())
+      .then(res => {
+        const createGameDto = res as CreateGameDto;
+        this.gameUuid = createGameDto.UUID;
+        this.adminId = createGameDto.Admin_Id;
+      });
   }
 }

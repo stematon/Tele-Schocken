@@ -12,16 +12,18 @@ import classes from '*.module.css';
 import './WaitingArea.css';
 import { observable, computed, action } from 'mobx';
 import { User } from '../../../store/User';
+import { Game } from '../../../store/Game';
 
 interface WaitingAreaProps {
   gameUuid: string;
-  onGameStarted(): void;
+  onGameStarted(game: Game): void;
 }
 
 @observer
 export class WaitingArea extends React.Component<WaitingAreaProps> {
-   @observable private timer: number = -1;
+  @observable private timer: number = -1;
   @observable private users: User[] = [];
+  @observable private game: Game = undefined;
 
   @computed
   private get gameUuid(): string {
@@ -49,19 +51,11 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
     });
   }
 
-  public constructor(props: any){
-    super(props);
-
-
-  }
-
   @action.bound
   public componentDidMount(): void {
     //TODO: Dispose this timer when component is unmounted
-    this.timer = window.setInterval(() =>
-    this.waitForUsers()
-  , 1000) as any;
-  console.log("timer", this.timer)
+    this.timer = window.setInterval(() => this.waitForUsers(), 5000) as any;
+    console.log('timer', this.timer);
     console.log('Test');
     const user1 = new User();
     user1.Id = 1;
@@ -75,11 +69,6 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
     user3.Id = 3;
     user3.Name = 'User3';
     this.users.push(user3);
-  }
-
-  @action.bound
-  public componentWillUnmount(): void {
-    console.log('Unmounted!!!!');
   }
 
   render() {
@@ -112,14 +101,24 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
     fetch(`/api/game/${this.gameUuid}`, {
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
-    }).then(result => {
-      console.log('Result: ', result);
-    });
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log('Game', res);
+        this.game = res;
+        if (this.game.State !== 'started') {
+          // TODO: Uncomment this, when long-polling is used
+          // this.waitForUsers();
+          console.log("Game not start yet")
+        } else {
+          this.props.onGameStarted(this.game)
+        }
+      });
   }
 
   @action.bound
   private handleStartGame(): void {
     window.clearInterval(this.timer);
-    this.props.onGameStarted();
+    this.props.onGameStarted(this.game);
   }
 }

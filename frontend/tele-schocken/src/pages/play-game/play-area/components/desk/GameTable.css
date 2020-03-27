@@ -1,0 +1,19 @@
+.game-table{
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .game-table-foreign-section{
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid black;
+    justify-content: center;
+  }
+  
+  .game-table-own-section{
+    border-top: 1px solid black;
+    justify-content: center;
+  }
