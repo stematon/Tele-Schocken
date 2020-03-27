@@ -32,8 +32,11 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
 
   @computed
   private get userElements(): JSX.Element[] {
+    if(this.users === undefined){
+      return null;
+    }
     return this.users.map((user, index) => {
-      if (user.Id == 1) {
+      if (user.Id === 1) {
         //if admin
         return (
           <ListItem button key={index}>
@@ -55,20 +58,6 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
   public componentDidMount(): void {
     //TODO: Dispose this timer when component is unmounted
     this.timer = window.setInterval(() => this.waitForUsers(), 5000) as any;
-    console.log('timer', this.timer);
-    console.log('Test');
-    const user1 = new User();
-    user1.Id = 1;
-    user1.Name = 'Admin';
-    this.users.push(user1);
-    const user2 = new User();
-    user2.Id = 2;
-    user2.Name = 'User2';
-    this.users.push(user2);
-    const user3 = new User();
-    user3.Id = 3;
-    user3.Name = 'User3';
-    this.users.push(user3);
   }
 
   render() {
@@ -104,12 +93,12 @@ export class WaitingArea extends React.Component<WaitingAreaProps> {
     })
       .then(res => res.json())
       .then(res => {
-        console.log('Game', res);
         this.game = res;
+        this.users = this.game.Users;
         if (this.game.State !== 'started') {
           // TODO: Uncomment this, when long-polling is used
           // this.waitForUsers();
-          console.log("Game not start yet")
+          console.log("Game did not start yet")
         } else {
           this.props.onGameStarted(this.game)
         }

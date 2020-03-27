@@ -3,7 +3,7 @@ import { observable, computed, action } from 'mobx';
 import { WaitingArea } from './waiting-area/WaitingArea';
 import { observer } from 'mobx-react';
 import { Game } from '../../store/Game';
-import { GameTable } from './play-area/components/desk/GameTable';
+import { GameTable } from './play-area/components/game-table/GameTable';
 
 interface PlayGamePageProps {
   adminId: number;
