@@ -9,10 +9,8 @@ import {
 } from '@material-ui/core';
 import './JoinComponent.css';
 import { observable, action, computed } from 'mobx';
-import { observer, inject } from 'mobx-react';
-import { makeStyles } from '@material-ui/core/styles';
+import { observer } from 'mobx-react';
 import SwipeableViews from 'react-swipeable-views';
-import { throwStatement } from '@babel/types';
 import { Redirect } from 'react-router';
 
 
@@ -24,14 +22,14 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
   @observable private gameCodeInput: string = '';
   @observable private usernameInput: string = '';
   @observable private tabIndex: number = 1;
-  @observable private gameId: number | undefined;
+  @observable private gameId: number = -1;
 
   @computed
   private get redirect(): JSX.Element{
-    if(this.gameId === undefined){
+    if(this.gameId === -1){
       return <div></div>;
     } else {
-      return <Redirect to={`/game/${this.gameCodeInput}`}/>
+      return <Redirect to={`/${this.gameCodeInput}`}/>
     }
   }
 
@@ -76,7 +74,7 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
                   <div
                     className='join-component-button-area-button'
                     onClick={this.handleJoinGame}>
-                    <Button color='primary'>Join!</Button>
+                    <Button color='primary' disabled={this.gameCodeInput === "" }>Join!</Button>
                   </div>
                 </div>
               </div>
@@ -118,31 +116,34 @@ export class JoinComponent extends React.Component<JoinComponentProps> {
   @action.bound
   private handleInputUserChange(e: any): void {
     this.usernameInput = e.target.value;
-    //console.log("Username: " + this.usernameInput);
   }
 
   @action.bound
   private handleInputGameCodeChange(e: any): void {
     this.gameCodeInput = e.target.value;
-    //console.log("Game-code: " + this.gameCodeInput);
   }
+
   @action.bound
   private handleTabIndexChange(e: any, value: number): void {
     this.tabIndex = value;
-    //console.log("TabIndexValue ", value);
   }
+
+  @action.bound
   private handleJoinGame(e: any): void {
-    //console.log("Join Game");
+    fetch(`/api/game/${this.gameCodeInput}`, {
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(result => {
+      console.log('Result: ', result);
+    });
   }
 
   @action.bound
   private handleCreateGame(e: any): void {
     fetch('/api/game', {
-      method: 'post',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: this.usernameInput })
-    }).then(result => console.log('Result: ', result));
-
-    //console.log("Create Game");
+    }).then(action(result => console.log('Result: ', result)));
   }
 }

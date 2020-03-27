@@ -1,4 +1,7 @@
 export class User{
-    public id: number|undefined;
-    public name: string|undefined;
+    public Id: number | undefined;
+    public Name: string | undefined;
+    public Chips: number | undefined;
+    public Passive: boolean | undefined;
+    public Visible: boolean | undefined;
 }
